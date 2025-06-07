@@ -1,11 +1,12 @@
-def call (){
-    withCredentials([usernamePassword(
-                    credentialsId: 'dockerHubCreds',
-                    passwordVariable: 'dockerHubPass',
-                    usernameVariable: 'dockerHubUser'
-                )]) {
-                    sh 'docker login -u $dockerHubUser -p $dockerHubPass'
-                    sh 'docker image tag two-tier-flask-app $dockerHubUser/two-tier-flask-app'
-                    sh 'docker push $dockerHubUser/two-tier-flask-app:latest'
-                }
+def call(String credId, String imageName){
+  withCredentials([usernamePassword(
+                    credentialsId:"${credId}",
+                    passwordVariable: "dockerHubPass",
+                    usernameVariable: "dockerHubUser"
+                )]){
+                
+                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+                sh "docker image tag ${imageName} ${env.dockerHubUser}/${imageName}"
+                sh "docker push ${env.dockerHubUser}/${imageName}:latest"
+                }  
 }
